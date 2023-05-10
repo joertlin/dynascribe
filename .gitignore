@@ -1,0 +1,23 @@
+# .gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+*.swp
+*.swo
+*.swn
+*.bak
+
+# JupyterLab
+.ipynb_checkpoints/
+*.ipynb
