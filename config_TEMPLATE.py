@@ -2,9 +2,6 @@ OPENAI_API_KEY = ""
 DYNLIST_API_KEY = ""
 
 # App setups
-## NeMo
-NEMO_ASR_MODEL="QuartzNet15x5Base-En"
-
 ## OPENAI
 OPENAI_LLM_MODEL = "gpt-3.5-turbo"
 

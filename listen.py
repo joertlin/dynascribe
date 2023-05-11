@@ -5,8 +5,6 @@ import keyboard
 import json
 import requests
 
-import nemo.collections.asr as nemo_asr
-
 import config
 import openai
 
@@ -63,11 +61,16 @@ def transcribe(directory, wav_file):
     json_file = update_ext(wav_file)
 
     print(f"Processing {wav_file}...")
-    transcriptions = asr_model.transcribe([wav_path])
-    transription = transcriptions[0]
-    print("Transcription:\n  %s"%transription)
+    audio_file= open(wav_path, "rb")
+    transcription = openai.Audio.transcribe("whisper-1", audio_file)
+    transcription = transcription['text']
 
-    return transription
+    #print(transcript)
+    #transcriptions = asr_model.transcribe([wav_path])
+    #transcription = transcriptions[0]
+    print("Transcription:\n  %s"%transcription)
+
+    return transcription
     
 def openai_chat(query_content, llm_model, query_role="user"):
     r = openai.ChatCompletion.create(
@@ -111,16 +114,8 @@ if __name__ == "__main__":
     OPENAI_ASSISTANT_SETUP = config.OPENAI_ASSISTANT_SETUP
     OPENAI_LLM_MODEL = config.OPENAI_LLM_MODEL
     
-    NEMO_ASR_MODEL = config.NEMO_ASR_MODEL
-    
     DYNALIST_KEY = config.DYNLIST_API_KEY
     DYNALIST_TAGS = config.DYNALIST_TAGS
-
-    # Speech Recognition model - Citrinet initially trained on Multilingual 
-    # LibriSpeech English corpus, and fine-tuned on the open source Aishell-2
-    asr_model = nemo_asr.models.EncDecCTCModel.from_pretrained(
-        model_name=NEMO_ASR_MODEL
-        ).cuda()
     
     directory = sys.argv[1]
 
