@@ -40,13 +40,15 @@ def listener(directory):
                     transcription = transcribe(directory, wav_file)
                     query = format_query_text(transcription)
 
-                    r = openai_chat(query)
+                    r = openai_chat(query, OPENAI_LLM_MODEL)
                     content = r["choices"][0]["message"]["content"].replace('"', '')
+                    tags_and_content = DYNALIST_TAGS + [content]
+                    formatted_content = " ".join(tags_and_content)
 
                     bundle = {
                         "raw_transcritpion":transcription,
                         "query":query,
-                        "content":content
+                        "content":formatted_content
                     }
                     to_json(bundle, os.path.join(directory, json_file))
                     result = add_to_dynalist_inbox(bundle["content"], DYNALIST_KEY)
@@ -67,7 +69,7 @@ def transcribe(directory, wav_file):
 
     return transription
     
-def openai_chat(query_content, query_role="user", llm_model="gpt-3.5-turbo"):
+def openai_chat(query_content, llm_model, query_role="user"):
     r = openai.ChatCompletion.create(
         model=llm_model, 
         messages=[{'role': query_role, 'content': query_content}],
@@ -78,11 +80,7 @@ def openai_chat(query_content, query_role="user", llm_model="gpt-3.5-turbo"):
     return r
 
 def format_query_text(transcription):
-    setup = "You are a transcription assistant. I will give you an unformatted "
-    setup += "text string, and you will return the string formatted with "
-    setup += "punctionation and likely misspelled words corrected:"
-
-    return setup + transcription
+    return OPENAI_ASSISTANT_SETUP + transcription
 
 def to_json(package, json_file_path):
     with open(json_file_path, 'w') as file:
@@ -100,8 +98,8 @@ def add_to_dynalist_inbox(content, token):
         'token': token,
         'content': content
     }
-
     response = requests.post(url, headers=headers, json=data)
+
     return response.json()
 
 if __name__ == "__main__":
@@ -110,12 +108,18 @@ if __name__ == "__main__":
         sys.exit(1)
 
     openai.api_key = config.OPENAI_API_KEY
-    DYNALIST_KEY = config.DYNLIST_API_KEY
+    OPENAI_ASSISTANT_SETUP = config.OPENAI_ASSISTANT_SETUP
+    OPENAI_LLM_MODEL = config.OPENAI_LLM_MODEL
     
+    NEMO_ASR_MODEL = config.NEMO_ASR_MODEL
+    
+    DYNALIST_KEY = config.DYNLIST_API_KEY
+    DYNALIST_TAGS = config.DYNALIST_TAGS
+
     # Speech Recognition model - Citrinet initially trained on Multilingual 
     # LibriSpeech English corpus, and fine-tuned on the open source Aishell-2
     asr_model = nemo_asr.models.EncDecCTCModel.from_pretrained(
-        model_name="QuartzNet15x5Base-En"
+        model_name=NEMO_ASR_MODEL
         ).cuda()
     
     directory = sys.argv[1]
