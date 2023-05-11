@@ -20,4 +20,3 @@ build/
 
 # JupyterLab
 .ipynb_checkpoints/
-*.ipynb
