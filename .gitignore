@@ -1,4 +1,6 @@
 # .gitignore
+#  app contents
+config.py
 
 # Python
 __pycache__/
