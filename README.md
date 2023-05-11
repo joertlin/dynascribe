@@ -28,17 +28,20 @@ These instructions will help you set up the system on your local machine.
 ### Installation
 
 1. Clone the repository:
-> git clone https://github.com/yourusername/dynalist-note-automator.git
-
+```bash
+git clone https://github.com/joertlin/dynascribe.git
+```
 2. Navigate to the repository directory:
-> cd dynalist-note-automator
-
+```bash
+cd dynascribe
+```
 3. Set up a Conda environment:
-> conda env create -f requirements.yml
-> activate 
-
-4. Set up the Nemo library
-<needs documentation>
+```bash
+conda env create -f requirements.yml
+activate dynascribe
+```
+4. Set up the Nemo library  
+This needs documentation!!!
 
 ## Usage
 
@@ -50,7 +53,8 @@ Use the `setup_template.py` file in the root directory of the project. Rename th
 
 ### Running the Application
 
-> python listener.py <directory_to_listen_for_.wav_files>
-
-## Testing
+```bash
+python listener.py <directory_to_listen_for_.wav_files>
+```
+## Testing  
 Several Jupyter notebooks are included for testing different parts of the system. You can use JupyterLab to run these notebooks as mini tests.
